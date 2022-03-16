@@ -32,3 +32,12 @@ func TestHomeHandlerBody(t *testing.T) {
 	w := performRequest(router, "GET", "/")
 	assert.Equal(t, "Hello World!\n", w.Body.String())
 }
+
+func TestHomeHandlerMethods(t *testing.T) {
+	router := appInit()
+	methods := []string{"POST", "PUT", "DELETE", "OPTIONS", "TRACE", "PATCH"}
+	for _, m := range methods {
+		w := performRequest(router, m, "/")
+		assert.Equal(t, http.StatusOK, w.Code)
+	}
+}

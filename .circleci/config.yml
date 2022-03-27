@@ -4,21 +4,6 @@ orbs:
    heroku: circleci/heroku@1.2.6
 
 jobs:
-  tests:
-    docker:
-      - image: golang:1.18
-    steps:
-      - checkout
-      - run:
-          name: "Go version in use:"
-          command: |
-            echo 'Is Go here?'
-            go version
-      - run:
-          name: Running Unit tests
-          command: |
-            echo 'Running Unit tests...'
-            go test -v
   build-deploy:
     docker:
       - image: cimg/base:stable
@@ -46,11 +31,8 @@ jobs:
 workflows:
     heroku_deploy:
         jobs:
-          - tests:
+          - build-deploy:
               filters:
                 branches:
                   only: main
-          - build-deploy:
-              requires:
-                - tests
 

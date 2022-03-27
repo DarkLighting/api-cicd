@@ -22,11 +22,11 @@ jobs:
       - run:
           name: "Push Docker image to registry"
           command: |
-            heroku container:push web --app=apixhw
+            heroku container:push web --app=$HEROKU_APP_NAME
       - run:
           name: "Release image to run"
           command: |
-            heroku container:release web --app=apixhw
+            heroku container:release web --app=$HEROKU_APP_NAME
 
 workflows:
     heroku_deploy:

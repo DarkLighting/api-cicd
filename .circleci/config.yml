@@ -1,6 +1,10 @@
 version: 2.1
+
+orbs:
+   heroku: circleci/heroku@1.2.6
+
 jobs:
-  build:
+  tests:
     docker:
       - image: golang:1.18
     steps:
@@ -15,3 +19,35 @@ jobs:
           command: |
             echo 'Running Unit tests...'
             go test -v
+  build-deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Build Docker image
+          command: |
+            docker build .
+      - heroku/install
+      - run:
+          name: "Login on Heroku"
+          command: |
+            heroku container:login
+      - run:
+          name: "Push Docker image to registry"
+          command: |
+            heroku container:push web --app=apixhw
+      - run:
+          name: "Release image to run"
+          command: |
+            heroku container:release web --app=apixhw
+
+workflows:
+    heroku_deploy:
+        jobs:
+          - tests
+          - build-deploy:
+              requires:
+                - tests
+
